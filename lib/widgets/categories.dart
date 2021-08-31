@@ -3,13 +3,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class Category extends StatelessWidget {
   final List category = [
-    [Icons.face, Colors.grey, "food"],
+    [Icons.fastfood_outlined, Colors.grey, "Food"],
     [Icons.power_off, Colors.blue, "Fruit"],
-    [Icons.h_mobiledata, Colors.red, "food"],
-    [Icons.car_rental_outlined, Colors.green, "Fruit"],
-    [Icons.card_giftcard, Colors.red, "food"],
+    [Icons.local_grocery_store, Colors.red, "Food"],
+    [Icons.electric_moped_outlined, Colors.green, "Fruit"],
+    [Icons.card_giftcard, Colors.red, "Food"],
     [Icons.ac_unit, Colors.amber, "Fruit"],
-    [Icons.ac_unit, Colors.red, "food"],
+    [Icons.ac_unit, Colors.red, "Food"],
     [Icons.ac_unit, Colors.amber, "Fruit"],
   ];
 
@@ -19,7 +19,7 @@ class Category extends StatelessWidget {
     double height = MediaQuery.of(context).size.height;
 
     return Container(
-        height: 120.sp,
+        height: 105.w,
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
           itemBuilder: (context, index) {
@@ -34,17 +34,18 @@ class Category extends StatelessWidget {
                             print("hi");
                           },
                           child: CircleAvatar(
-                            radius: (35.sp),
+                            radius: (30.w),
                             child: Icon(
                               category[index][0],
                               color: Colors.white,
-                              size: 35.sp,
+                              size: 30.w,
                             ),
                             backgroundColor: category[index][1],
                           ))),
                   Text(
                     category[index][2],
-                    style: TextStyle(fontSize: 15.sp),
+                    style:
+                        TextStyle(fontSize: 18.w, fontWeight: FontWeight.w600),
                   )
                 ],
               ),
