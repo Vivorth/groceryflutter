@@ -15,6 +15,7 @@ class _CartCardViewState extends State<CartCardView> {
       Get.put(AddItemToCardController());
   @override
   Widget build(BuildContext context) {
+    var statusbar = addItemToCardController.statusbarHeight.toDouble();
     return Container(
       decoration: BoxDecoration(
           borderRadius: BorderRadius.only(topLeft: Radius.circular(40.w))),
@@ -23,7 +24,8 @@ class _CartCardViewState extends State<CartCardView> {
           160.w - //bottom and top navigation
           -12.w - //padding top
           10.sp -
-          20.w,
+          20.w -
+          statusbar,
       child: Obx(
         () => addItemToCardController.itemsincart.isEmpty
             ? const Center(child: Text("No item in cart"))
@@ -66,7 +68,7 @@ class _CartCardViewState extends State<CartCardView> {
                                       fontWeight: FontWeight.bold,
                                       fontSize: 18.w)),
                               Obx(() => Text(
-                                  '\$${addItemToCardController.itemsincart[index][0].price} x${addItemToCardController.itemsincart[index][1]}',
+                                  '\$${addItemToCardController.itemsincart[index][0].price.toStringAsFixed(2)} x${addItemToCardController.itemsincart[index][1]}',
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 12.w,

@@ -1,57 +1,77 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:groceryflutter/controllers/additemstocart.dart';
+import 'package:get/get.dart';
+import 'package:groceryflutter/controllers/dataController.dart';
+import 'package:groceryflutter/models/category.dart';
+import 'package:groceryflutter/screens/featuredexpand.dart';
 
 class Category extends StatelessWidget {
-  final List category = [
-    [Icons.fastfood_outlined, Colors.grey, "Food"],
-    [Icons.power_off, Colors.blue, "Fruit"],
-    [Icons.local_grocery_store, Colors.red, "Food"],
-    [Icons.electric_moped_outlined, Colors.green, "Fruit"],
-    [Icons.card_giftcard, Colors.red, "Food"],
-    [Icons.ac_unit, Colors.amber, "Fruit"],
-    [Icons.ac_unit, Colors.red, "Food"],
-    [Icons.ac_unit, Colors.amber, "Fruit"],
-  ];
+  final AddItemToCardController addItemToCardController =
+      Get.put(AddItemToCardController());
+
+  final DataController dataController = Get.put(DataController());
 
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
+    var str = "grey";
 
-    return Container(
-        height: 105.w,
-        child: ListView.builder(
-          scrollDirection: Axis.horizontal,
-          itemBuilder: (context, index) {
-            return Container(
-              margin: EdgeInsets.all(10.sp),
-              child: Column(
-                children: [
-                  Material(
-                      child: InkWell(
-                          splashColor: category[index][1][200],
-                          onTap: () {
-                            print("hi");
-                          },
-                          child: CircleAvatar(
-                            radius: (30.w),
-                            child: Icon(
-                              category[index][0],
-                              color: Colors.white,
-                              size: 30.w,
-                            ),
-                            backgroundColor: category[index][1],
-                          ))),
-                  Text(
-                    category[index][2],
-                    style:
-                        TextStyle(fontSize: 18.w, fontWeight: FontWeight.w600),
-                  )
-                ],
-              ),
-            );
-          },
-          itemCount: category.length,
-        ));
+    return FutureBuilder(
+      future: dataController.categoires(),
+      builder: (context, AsyncSnapshot<List<CategoryModel>> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          // to check when data is still loading
+          //to prevent from red screen
+          return const CircularProgressIndicator();
+        }
+        var list = snapshot.data!;
+        return Container(
+            height: 105.w,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemBuilder: (context, index) {
+                String type = list[index].label;
+                final String name = type;
+                
+                if (type.contains(" ")) { // need to replace space with "-" coz we pass this to url=> url only supports "-"
+                  type = type.replaceAll(" ", "-");
+                }
+
+                return Container(
+                  margin: EdgeInsets.all(10.sp),
+                  child: Column(
+                    children: [
+                      Material(
+                          child: InkWell(
+                              splashColor: Color(int.parse(list[index].color)),
+                              onTap: () {
+                                Get.to(() => FeaturedExpand(type, name));
+                              },
+                              child: CircleAvatar(
+                                radius: (30.w),
+                                child: Icon(
+                                  IconData(list[index].icon,
+                                      fontFamily: 'MaterialIcons'),
+                                  color: Colors.white,
+                                  size: 30.w,
+                                ),
+                                backgroundColor:
+                                    Color(int.parse(list[index].color)),
+                              ))),
+                      Text(
+                        list[index].label,
+                        style: TextStyle(
+                            fontSize: 18.w, fontWeight: FontWeight.w600),
+                      )
+                    ],
+                  ),
+                );
+              },
+              itemCount: list.length,
+            ));
+      },
+    );
   }
 }

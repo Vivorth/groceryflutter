@@ -3,13 +3,15 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:groceryflutter/screens/featuredexpand.dart';
 import 'package:groceryflutter/screens/profile.dart';
+import 'package:groceryflutter/screens/signin.dart';
+import 'package:groceryflutter/screens/signup.dart';
 import 'package:groceryflutter/widgets/cart.dart';
 import 'package:groceryflutter/widgets/featuredgrid.dart';
 import 'package:groceryflutter/widgets/itemlistview.dart';
 import '../widgets/categories.dart';
 import 'controllers/additemstocart.dart';
 
-void main() {
+void main() async {
   runApp(MyApp());
 }
 
@@ -42,18 +44,23 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
+    addItemToCardController.getStatusBarHeight(context);
+
     double textscalefactor = MediaQuery.of(context)
         .textScaleFactor; //in case they change fontsize in settings of their system
-    return width >= 768 && width < 1440
-        ? const Scaffold(
-            body: SafeArea(
-              child: Text("Hello from Tablet"),
-            ),
-          )
-        : width >= 1440
-            ? Scaffold(body: const SafeArea(child: Text("Hello from Desktop")))
-            : Scaffold(
-                body: SafeArea(
+    if (width >= 768 && width < 1440) {
+      return const Scaffold(
+        body: SafeArea(
+          child: Text("Hello from Tablet"),
+        ),
+      );
+    } else {
+      return width >= 1440
+          ? Scaffold(body: const SafeArea(child: Text("Hello from Desktop")))
+          : Scaffold(
+              body: Container(
+                color: const Color(0xFF2CB064),
+                child: SafeArea(
                     child: SingleChildScrollView(
                   child: Container(
                     decoration: const BoxDecoration(color: Color(0xFF2CB064)),
@@ -62,14 +69,14 @@ class _MyHomePageState extends State<MyHomePage> {
                         Stack(
                           children: [
                             Container(
-                              height: 172.w,
+                              height: 185.w,
                               decoration: BoxDecoration(
                                   color: const Color(0xFFF6F7FA),
                                   borderRadius: BorderRadius.only(
                                       bottomLeft: Radius.circular(40.sp))),
                             ),
                             Container(
-                              height: 172.w,
+                              height: 185.w,
                               child: Container(
                                   decoration: BoxDecoration(
                                       color: const Color(0xFF2CB064),
@@ -106,7 +113,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                         ],
                                       ),
                                       Container(
-                                          height: 45.w,
+                                          height: 52.w,
                                           child: TextField(
                                               decoration: InputDecoration(
                                             fillColor: Colors.white,
@@ -117,18 +124,18 @@ class _MyHomePageState extends State<MyHomePage> {
                                                 ),
                                                 borderRadius:
                                                     BorderRadius.circular(
-                                                        20.sp)),
+                                                        20.w)),
                                             labelText: 'Search',
                                             labelStyle:
-                                                TextStyle(fontSize: 15.sp),
+                                                TextStyle(fontSize: 15.w),
                                             hintText:
                                                 'Search your Grocery food',
                                             hintStyle: TextStyle(
-                                              fontSize: 15.sp,
+                                              fontSize: 15.w,
                                             ),
                                             prefixIcon: Icon(
                                               Icons.search,
-                                              size: 30.sp,
+                                              size: 30.w,
                                             ),
                                           )))
                                     ],
@@ -140,7 +147,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             padding: EdgeInsets.only(bottom: 10.w),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(40.sp),
+                                topLeft: Radius.circular(40.w),
                               ),
                               color: const Color(0xFFF6F7FA),
                             ),
@@ -158,13 +165,15 @@ class _MyHomePageState extends State<MyHomePage> {
                                         Text(
                                           "Categories",
                                           style: TextStyle(
-                                              fontSize: 24.sp,
+                                              fontSize: 24.w,
                                               fontWeight: FontWeight.bold),
                                         ),
                                         IconButton(
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            Get.to(() => SignIn());
+                                          },
                                           icon: Icon(Icons.arrow_forward),
-                                          iconSize: 30.sp,
+                                          iconSize: 30.w,
                                           color: Colors.grey,
                                         ),
                                       ],
@@ -172,7 +181,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 Category(),
                                 Container(
                                     margin:
-                                        EdgeInsets.symmetric(horizontal: 15.sp),
+                                        EdgeInsets.symmetric(horizontal: 15.w),
                                     child: Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
@@ -182,23 +191,25 @@ class _MyHomePageState extends State<MyHomePage> {
                                         Text(
                                           "Featured Products",
                                           style: TextStyle(
-                                              fontSize: 24.sp,
+                                              fontSize: 24.w,
                                               fontWeight: FontWeight.bold),
                                         ),
                                         IconButton(
                                           onPressed: () {
-                                            Get.to(() => FeaturedExpand());
+                                            Get.to(() => FeaturedExpand(
+                                                "Featured",
+                                                "Featured Products"));
                                           },
                                           icon: Icon(Icons.arrow_forward),
-                                          iconSize: 30.sp,
+                                          iconSize: 30.w,
                                           color: Colors.grey,
                                         ),
                                       ],
                                     )),
-                                ItemListView(),
+                                ItemListView("Featured"),
                                 Container(
                                     margin:
-                                        EdgeInsets.symmetric(horizontal: 15.sp),
+                                        EdgeInsets.symmetric(horizontal: 15.w),
                                     child: Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
@@ -208,124 +219,127 @@ class _MyHomePageState extends State<MyHomePage> {
                                         Text(
                                           "Recently Added Products",
                                           style: TextStyle(
-                                              fontSize: 24.sp,
+                                              fontSize: 24.w,
                                               fontWeight: FontWeight.bold),
                                         ),
                                         IconButton(
                                           onPressed: () {
-                                            Get.to(() => FeaturedExpand());
+                                            Get.to(() => FeaturedExpand("New",
+                                                "Recently Added Products"));
                                           },
                                           icon: Icon(Icons.arrow_forward),
-                                          iconSize: 30.sp,
+                                          iconSize: 30.w,
                                           color: Colors.grey,
                                         ),
                                       ],
                                     )),
-                                ItemListView(),
+                                ItemListView("New"),
+                                SizedBox(height: 50.w)
                               ],
                             )),
                       ],
                     ),
                   ),
                 )),
-                floatingActionButton: Container(
-                  height: 85.sp,
-                  width: 85.sp,
-                  child: FloatingActionButton(
-                    backgroundColor: const Color(0xFF2CB064),
-                    onPressed: () {
-                      Get.to(() => Cart());
-                    },
-                    child: Container(
-                        child: Obx(
-                      () => addItemToCardController.numberofitems > 0
-                          ? Padding(
-                              padding: EdgeInsets.all(10.sp),
-                              child: Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  Icon(
-                                    Icons.shopping_cart,
-                                    size: 30.sp,
-                                  ),
-                                  Flexible(
-                                      child: Text(
-                                    addItemToCardController.numberofitems
-                                        .toString(),
-                                    style: TextStyle(
-                                        fontSize: 20.sp,
-                                        fontWeight: FontWeight.bold),
-                                  ))
-                                ],
-                              ),
-                            )
-                          : Icon(
-                              Icons.shopping_cart,
-                              size: 30.sp,
-                            ),
-                    )),
-                  ),
-                ),
-                bottomNavigationBar: Material(
-                  color: Colors.transparent,
-                  elevation: 30,
+              ),
+              floatingActionButton: Container(
+                height: 80.w,
+                width: 80.w,
+                child: FloatingActionButton(
+                  backgroundColor: const Color(0xFF2CB064),
+                  onPressed: () {
+                    Get.to(() => Cart());
+                  },
                   child: Container(
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(20.w),
-                          topRight: Radius.circular(20.w),
-                        )),
-                    width: double.infinity,
-                    height: 80.w,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Obx(() => Text(
-                                  "\$${addItemToCardController.totalprice.toStringAsFixed(2)}", //2 decimal places
-                                  style: TextStyle(
-                                      fontSize: 25.w,
-                                      fontWeight: FontWeight.bold),
-                                )),
-                            SizedBox(
-                              height: 5.w,
-                            ),
-                            Text(
-                              "Total Price",
-                              style: TextStyle(fontSize: 15.w),
-                            )
-                          ],
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(left: 60.w),
-                          child: TextButton(
-                              onPressed: () {},
-                              child: Container(
-                                width: 150.w,
-                                height: 45.w,
-                                decoration: BoxDecoration(
-                                    color: const Color(0xFF2CB064),
-                                    borderRadius: BorderRadius.all(
-                                        Radius.circular(15.w))),
-                                child: Center(
+                      child: Obx(
+                    () => addItemToCardController.numberofitems > 0
+                        ? Padding(
+                            padding: EdgeInsets.all(10.w),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Icon(
+                                  Icons.shopping_cart,
+                                  size: 30.w,
+                                ),
+                                Flexible(
                                     child: Text(
-                                  "Buy Now",
+                                  addItemToCardController.numberofitems
+                                      .toString(),
                                   style: TextStyle(
-                                      fontSize: 16.w,
-                                      color: Colors.white,
+                                      fontSize: 20.w,
                                       fontWeight: FontWeight.bold),
-                                )),
-                              )),
-                        )
-                      ],
-                    ),
-                  ),
+                                ))
+                              ],
+                            ),
+                          )
+                        : Icon(
+                            Icons.shopping_cart,
+                            size: 30.w,
+                          ),
+                  )),
                 ),
-              );
+              ),
+              // bottomNavigationBar: Material(
+              //   color: Colors.transparent,
+              //   elevation: 30,
+              //   child: Container(
+              //     decoration: BoxDecoration(
+              //         color: Colors.white,
+              //         borderRadius: BorderRadius.only(
+              //           topLeft: Radius.circular(20.w),
+              //           topRight: Radius.circular(20.w),
+              //         )),
+              //     width: double.infinity,
+              //     height: 80.w,
+              //     child: Row(
+              //       crossAxisAlignment: CrossAxisAlignment.center,
+              //       mainAxisAlignment: MainAxisAlignment.spaceAround,
+              //       children: [
+              //         Column(
+              //           mainAxisAlignment: MainAxisAlignment.center,
+              //           children: [
+              //             Obx(() => Text(
+              //                   "\$${addItemToCardController.totalprice.toStringAsFixed(2)}", //2 decimal places
+              //                   style: TextStyle(
+              //                       fontSize: 25.w,
+              //                       fontWeight: FontWeight.bold),
+              //                 )),
+              //             SizedBox(
+              //               height: 5.w,
+              //             ),
+              //             Text(
+              //               "Total Price",
+              //               style: TextStyle(fontSize: 15.w),
+              //             )
+              //           ],
+              //         ),
+              //         Container(
+              //           margin: EdgeInsets.only(left: 60.w),
+              //           child: TextButton(
+              //               onPressed: () {},
+              //               child: Container(
+              //                 width: 150.w,
+              //                 height: 45.w,
+              //                 decoration: BoxDecoration(
+              //                     color: const Color(0xFF2CB064),
+              //                     borderRadius:
+              //                         BorderRadius.all(Radius.circular(15.w))),
+              //                 child: Center(
+              //                     child: Text(
+              //                   "Buy Now",
+              //                   style: TextStyle(
+              //                       fontSize: 16.w,
+              //                       color: Colors.white,
+              //                       fontWeight: FontWeight.bold),
+              //                 )),
+              //               )),
+              //         )
+              //       ],
+              //     ),
+              //   ),
+              // ),
+            );
+    }
   }
 }
