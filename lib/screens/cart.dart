@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:groceryflutter/main.dart';
 import 'package:groceryflutter/widgets/cart_cardview.dart';
 import '../controllers/additemstocart.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -30,74 +31,73 @@ class Cart extends StatelessWidget {
       // ),
 
       body: Container(
-        color: const Color(0xFF2CB064), //statusbar color
+          color: const Color(0xFF2CB064), //statusbar color
 
-        child: SafeArea(
+          child: SafeArea(
             child: SingleChildScrollView(
-          //in here cannot put directly to stack
+              //in here cannot put directly to stack
 
-          child: Container(
-            decoration: BoxDecoration(color: Color(0xFF2CB064)),
-            child: Column(
-              //we use column so stack and listview are seperated.
-              children: [
-                Stack(children: [
-                  Container(
-                    height: 80.w,
-                    decoration: BoxDecoration(
-                        color: Color(0xFFF6F7FA),
+              child: Column(
+                //we use column so stack and listview are seperated.
+                children: [
+                  Stack(children: [
+                    Container(
+                      height: 80.w,
+                      decoration: BoxDecoration(
+                          color: Color(0xFFF6F7FA),
+                          borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(40.w))),
+                    ),
+                    Container(
+                      alignment: Alignment.center,
+                      height: 80.w,
+                      decoration: BoxDecoration(
                         borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(40.w))),
-                  ),
-                  Container(
-                    alignment: Alignment.center,
-                    height: 80.w,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                        bottomRight: Radius.circular(40.w),
+                          bottomRight: Radius.circular(40.w),
+                        ),
+                        color: Color(0xFF2CB064),
                       ),
-                      color: Color(0xFF2CB064),
+                      child: Text(
+                        "Cart",
+                        style: TextStyle(
+                            fontSize: 30.w,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w500),
+                      ),
                     ),
-                    child: Text(
-                      "Cart",
-                      style: TextStyle(
-                          fontSize: 30.w,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w500),
-                    ),
-                  ),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      height: 80.w,
+                      margin: EdgeInsets.only(left: 30.w),
+                      child: Material(
+                          color: Colors.transparent,
+                          shape: CircleBorder(),
+                          clipBehavior: Clip.hardEdge,
+                          child: IconButton(
+                            onPressed: () {
+                              Get.to(() => MyHomePage());
+                            },
+                            icon: Icon(Icons.arrow_back_ios,
+                                color: Colors.white, size: 30.w),
+                          )),
+                    )
+                  ]),
                   Container(
-                    alignment: Alignment.centerLeft,
-                    height: 80.w,
-                    margin: EdgeInsets.only(left: 30.w),
-                    child: Material(
-                        color: Colors.transparent,
-                        shape: CircleBorder(),
-                        clipBehavior: Clip.hardEdge,
-                        child: IconButton(
-                          onPressed: () {
-                            Get.back();
-                          },
-                          icon: Icon(Icons.arrow_back_ios,
-                              color: Colors.white, size: 30.w),
-                        )),
-                  )
-                ]),
-                Container(
-                  padding: EdgeInsets.only(top: 12.w, left: 12.w, right: 12.w),
-                  decoration: BoxDecoration(
-                      borderRadius:
-                          BorderRadius.only(topLeft: Radius.circular(40.w)),
-                      color: Color(0xFFF6F7FA)),
-                  //child: SingleChildScrollView(
-                  //put scrollview here coz it has some problems when we put it before stack
-                  child: const CartCardView(),
-                ),
-              ],
+                    padding:
+                        EdgeInsets.only(top: 12.w, left: 12.w, right: 12.w),
+                    decoration: BoxDecoration(
+                        borderRadius:
+                            BorderRadius.only(topLeft: Radius.circular(40.w)),
+                        color: Color(0xFFF6F7FA)),
+                    //child: SingleChildScrollView(
+                    //put scrollview here coz it has some problems when we put it before stack
+                    child: const CartCardView(),
+                  ),
+                ],
+              ),
             ),
-          ),
-        )),
-      ),
+          )),
+
       bottomNavigationBar: Material(
         color: Colors.transparent,
         elevation: 30,

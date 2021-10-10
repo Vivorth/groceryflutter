@@ -1,14 +1,54 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
+import 'package:groceryflutter/controllers/additemstocart.dart';
+import 'package:groceryflutter/controllers/navigationController.dart';
+import 'package:groceryflutter/main.dart';
 import 'package:groceryflutter/screens/forgotpassword.dart';
 import 'package:groceryflutter/screens/signup.dart';
+import 'package:groceryflutter/screens/cart.dart';
+import 'package:http/http.dart' as http;
 
 class SignIn extends StatelessWidget {
-  const SignIn({Key? key}) : super(key: key);
+  final usernameController = TextEditingController();
+  final passwordController = TextEditingController();
+  var navigationController = Get.put(navigation());
   @override
   Widget build(BuildContext context) {
     double statusbar = MediaQuery.of(context).padding.top;
+    final storage = new FlutterSecureStorage();
+
+    void signIn() async {
+      String username = usernameController.text;
+      String password = passwordController.text.toString();
+
+      Map data = {"name": username, "password": password};
+      var jsonData = null;
+      if (username.isEmpty || password.isEmpty) {
+        print("Cannot empty");
+      } else {
+        String url = "http://10.0.2.2:4000/users/login";
+        final response = await http.post(Uri.parse(url), body: data);
+
+        if (response.statusCode == 200) {
+          jsonData = json.decode(response.body);
+          storage.write(key: 'token', value: jsonData['token']);
+          storage.write(key: 'userID', value: jsonData['userID']);
+          var value = await storage.read(key: 'token');
+
+          print("Login successfully and token is ${jsonData['token']}");
+          print("Read Token is ${value}");
+          print("userIDD = ${await storage.read(key: 'userID')}");
+          navigationController.navigateTo();
+          var obj = new MyHomePage();
+        } else {
+          print("Loggin failed!");
+        }
+      }
+    }
 
     ScreenUtil.init(
         BoxConstraints(
@@ -81,6 +121,7 @@ class SignIn extends StatelessWidget {
                       fontWeight: FontWeight.w600),
                 ),
                 TextField(
+                  controller: usernameController,
                   decoration: InputDecoration(
                       prefixIcon: Icon(
                     Icons.person_outline,
@@ -99,6 +140,7 @@ class SignIn extends StatelessWidget {
                       fontWeight: FontWeight.w600),
                 ),
                 TextField(
+                  controller: passwordController,
                   decoration: InputDecoration(
                       prefixIcon: Icon(
                         Icons.lock_outline,
@@ -157,7 +199,9 @@ class SignIn extends StatelessWidget {
                             style: TextStyle(
                                 fontWeight: FontWeight.w600, fontSize: 20.w),
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+                            signIn();
+                          },
                         ),
                       ),
                       Positioned(

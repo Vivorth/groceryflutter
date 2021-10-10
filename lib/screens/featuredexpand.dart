@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:groceryflutter/controllers/additemstocart.dart';
 import 'package:groceryflutter/controllers/dataController.dart';
-import 'package:groceryflutter/widgets/cart.dart';
+import 'package:groceryflutter/screens/cart.dart';
 import 'package:groceryflutter/widgets/cart_cardview.dart';
 import 'package:groceryflutter/widgets/featuredgrid.dart';
 
@@ -17,6 +17,7 @@ class FeaturedExpand extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
     // initilize first before use it in each screen
     ScreenUtil.init(
         BoxConstraints(
@@ -27,11 +28,12 @@ class FeaturedExpand extends StatelessWidget {
     return Scaffold(
       body: Container(
         color: const Color(0xFF2CB064),
-        child: SafeArea(
-            child: SingleChildScrollView(
+        child: SingleChildScrollView(
           //in here cannot put directly to stack
 
           child: Container(
+            padding:
+                EdgeInsets.only(top: addItemToCardController.statusbarHeight),
             decoration: BoxDecoration(color: Color(0xFF2CB064)),
             child: Column(
               //we use column so stack and listview are seperated.
@@ -47,15 +49,19 @@ class FeaturedExpand extends StatelessWidget {
                   Container(
                     alignment: Alignment.center,
                     height: 80.w,
+                    padding:
+                        EdgeInsets.only(left: width * 0.2, right: width * 0.2),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.only(
                         bottomRight: Radius.circular(40.w),
                       ),
                       color: Color(0xFF2CB064),
                     ),
-                    child: Flexible(
+                    child: FittedBox(
+                      fit: BoxFit.fitWidth,
                       child: Text(
                         "${name}",
+                        maxLines: 1,
                         style: TextStyle(
                             fontSize: 26.w,
                             color: Colors.white,
@@ -93,7 +99,7 @@ class FeaturedExpand extends StatelessWidget {
               ],
             ),
           ),
-        )),
+        ),
       ),
       floatingActionButton: Container(
           height: 85.sp,

@@ -1,15 +1,22 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
+import 'package:groceryflutter/controllers/dataController.dart';
 import 'package:groceryflutter/models/category.dart';
 import 'package:groceryflutter/models/featureditems.dart';
+import 'package:groceryflutter/models/productmodel.dart';
 import 'package:groceryflutter/widgets/categories.dart';
+import 'package:http/http.dart' as http;
 
 class AddItemToCardController extends GetxController {
   var totalprice = 0.0.obs;
   var numberofitems = 0.obs;
   var itemsincart = [].obs;
   var statusbarHeight = 0.0.obs.toDouble();
-  
+  var homebarHeight = 0.0.obs.toDouble();
+  final DataController dataController = Get.put(DataController());
+  var itemincart = <ProductModel>[].obs;
+
   // List<List<CategoryModel>> category = [
   //   [CategoryModel(Icons.fastfood_outlined, Colors.grey, "Food")],
   //   [Icons.power_off, Colors.blue, "Fruit"],
@@ -43,6 +50,20 @@ class AddItemToCardController extends GetxController {
     //for child widget it will turn 0 in status bar so we need to get it from here
     // init it in main screen
     statusbarHeight = MediaQuery.of(context).padding.top;
+    homebarHeight = MediaQuery.of(context).padding.bottom;
+  }
+
+  addItem1(String itemId) async {
+    var userID =
+        (await const FlutterSecureStorage().read(key: 'userID')).toString();
+    var token = await const FlutterSecureStorage().read(key: 'token');
+
+    await http.post(
+        Uri.parse("http://10.0.2.2:4000/users/${userID}/cart/${itemId}"),
+        headers: {
+          'token': 'Bearer ${token}',
+        });
+    await dataController.getCart1();
   }
 
   additem(String image, String label, double price, String unit, String id) {

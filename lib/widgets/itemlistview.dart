@@ -4,9 +4,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:groceryflutter/controllers/dataController.dart';
 import 'package:groceryflutter/models/productmodel.dart';
+import 'package:groceryflutter/screens/signin.dart';
+import 'package:groceryflutter/screens/splash_screen.dart';
 import '../controllers/additemstocart.dart';
 import '../models/featureditems.dart';
 
@@ -15,7 +18,7 @@ class ItemListView extends StatelessWidget {
       Get.put(AddItemToCardController());
   final DataController data = Get.put(DataController());
   late final String type;
-  ItemListView(this.type);
+  ItemListView(this.type, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +31,14 @@ class ItemListView extends StatelessWidget {
         future: type == "New" ? data.New() : data.featured(),
         builder: (context, AsyncSnapshot<List<ProductModel>> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const CircularProgressIndicator();
+            return SizedBox(
+                height: 185.w,
+                child: Center(
+                    child: SplashScreen().checkplatform1() == "IOS"
+                        ? const CupertinoActivityIndicator()
+                        : const CircularProgressIndicator(
+                            color: Color(0xFF2CB064),
+                          )));
           }
 
           final featureditems = snapshot.data!;
@@ -67,13 +77,16 @@ class ItemListView extends StatelessWidget {
                                     color: Colors.green[500],
                                     fontWeight: FontWeight.bold),
                               ),
-                              Text(
-                                featureditems[index].name,
-                                overflow: TextOverflow.fade,
-                                maxLines: 1,
-                                style: TextStyle(
-                                  fontSize: 18.w,
-                                  fontWeight: FontWeight.bold,
+                              FittedBox(
+                                fit: BoxFit.fitWidth,
+                                child: Text(
+                                  featureditems[index].name,
+                                  overflow: TextOverflow.fade,
+                                  maxLines: 1,
+                                  style: TextStyle(
+                                    fontSize: 18.w,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                               Text(
@@ -86,22 +99,15 @@ class ItemListView extends StatelessWidget {
                             ],
                           ))),
                           TextButton(
-                              onPressed: () {
-                                addItemToCardController.increment();
-                                // addItemToCardController.itemsincart.add(
-                                //   FeaturedItems(
-                                //       featureditems[index].image,
-                                //       featureditems[index].label,
-                                //       featureditems[index].price,
-                                //       featureditems[index].unit,
-                                //       featureditems[index].id)
-                                // );
-                                addItemToCardController.additem(
-                                    featureditems[index].image,
-                                    featureditems[index].name,
-                                    featureditems[index].price,
-                                    featureditems[index].unit,
-                                    featureditems[index].id);
+                              onPressed: () async {
+                                var value = await FlutterSecureStorage()
+                                    .read(key: 'token');
+                                if (value == null) {
+                                  Get.to(() => SignIn());
+                                } else {
+                                  addItemToCardController.addItem1(
+                                      featureditems[index].id.toString());
+                                }
                               },
                               child: Container(
                                 decoration: BoxDecoration(

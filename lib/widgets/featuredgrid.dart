@@ -64,14 +64,14 @@ class FeaturedGrid extends StatelessWidget {
 
           var list = snapshot.data!;
           return Padding(
-              padding: EdgeInsets.all(10.w),
+              padding: EdgeInsets.only(left: 10.w, right: 10.w),
               child: GridView.builder(
                 shrinkWrap: true,
                 physics: const ScrollPhysics(),
                 scrollDirection: Axis.vertical,
                 itemCount: list.length,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    childAspectRatio: 0.8,
+                    childAspectRatio: 0.82,
                     crossAxisCount: 2,
                     crossAxisSpacing: 5),
                 itemBuilder: (context, index) {
@@ -100,13 +100,16 @@ class FeaturedGrid extends StatelessWidget {
                             SizedBox(
                               height: 5.sp,
                             ),
-                            Text(
-                              list[index].name,
-                              overflow: TextOverflow.fade,
-                              maxLines: 1,
-                              style: TextStyle(
-                                fontSize: 24.w,
-                                fontWeight: FontWeight.bold,
+                            FittedBox(
+                              fit: BoxFit.fitWidth,
+                              child: Text(
+                                list[index].name,
+                                overflow: TextOverflow.fade,
+                                maxLines: 1,
+                                style: TextStyle(
+                                  fontSize: 24.w,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
                             SizedBox(
@@ -144,21 +147,21 @@ class FeaturedGrid extends StatelessWidget {
                                   border: Border(
                                       top: BorderSide(
                                           width: 1.sp, color: Colors.grey))),
-                              padding: EdgeInsets.all(5.w),
+                              padding: EdgeInsets.all(3.w),
                               child: Padding(
-                                  padding: EdgeInsets.all(5.sp),
+                                  padding: EdgeInsets.all(3.w),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Icon(
                                         Icons.shopping_cart_outlined,
                                         color: Colors.green[500],
-                                        size: 25.sp,
+                                        size: 25.w,
                                       ),
                                       Text(
                                         "Add to Cart",
                                         style: TextStyle(
-                                            fontSize: 18.sp,
+                                            fontSize: 15.w,
                                             fontWeight: FontWeight.w800,
                                             color: Colors.black),
                                       )
